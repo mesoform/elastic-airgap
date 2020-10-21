@@ -1,0 +1,16 @@
+name = "elastic-stack"
+
+path_to_credentials = "{{CREDENTIALS_PATH}}"
+service_account_email = "{{SERVICE_ACCOUNT_EMAIL}}"
+public_key_path = "{{PUBLIC_KEY_PATH}}"
+private_key_path = "{{PRIVATE_KEY_PATH}}"
+project_id = "{{PROJECT_ID}}"
+default_region = "{{DEFAULT_REGION}}"
+
+compute_region = "europe-west1"
+instance_zone = "europe-west1-c"
+volume_device_name = "/dev/sdf"
+ssh_user = "centos"
+
+local_public_ip="{{LOCAL_PUBLIC_IP}}/32"
+secure_source_ip="{{SECURE_SOURCE_IP}}/32"
