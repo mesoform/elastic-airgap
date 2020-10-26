@@ -1,5 +1,5 @@
 variable "hostname" {
-  description = "elastic-server"
+  description = "Elastic service"
 }
 
 variable "volume_device_name" {
@@ -9,11 +9,6 @@ variable "volume_device_name" {
 variable "volume_mount_path" {
   default     = "/mnt/elastic"
   description = "The volume mount path"
-}
-
-variable "elasticsearch_image" {
-  default = "docker.elastic.co/elasticsearch/elasticsearch:7.9.2"
-  description = "The Elasticsearch docker image."
 }
 
 variable "machine_type" {
@@ -66,6 +61,4 @@ variable "disk_size" {
   description = "The size of the image in gigabytes"
 }
 
-variable "topic_name" {}
-
-variable "subscription_name" {}
+variable "bucket_path" {}

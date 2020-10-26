@@ -25,19 +25,9 @@ variable "instance_zone" {
 }
 
 variable "image" {
-  default = "ubuntu-1604-xenial-v20190430"
-  description = "The image to initialise the disk for instance. E.g. ubuntu-1604-xenial-v20190430"
+  default = "centos-7-v20201014"
+  description = "The image to initialise the disk for instance."
 }
-
-//variable "gcp_vpc_cidr" {
-//  description = "CIDR for subnet"
-//  default     = "10.128.0.0/9"
-//}
-//
-//variable "gcp_external_ip_name" {
-//  default = "gcp-zabbix-vpn-ip"
-//  description = "The GCP VPN External IP address name"
-//}
 
 variable "volume_device_name" {}
 
@@ -51,8 +41,4 @@ variable "local_public_ip" {}
 
 variable "secure_source_ip" {}
 
-variable "expiration_policy" {}
-
-variable "topic_name" {}
-
-variable "subscription_name" {}
+variable "bucket_path" {}

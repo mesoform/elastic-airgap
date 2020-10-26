@@ -2,16 +2,8 @@ data "template_file" "install_elastic_stack" {
   template = "${file("${path.module}/files/install_elasticstack.sh.tpl")}"
 
   vars {
-    hostname              = "${var.hostname}"
-
-    volume_device_name    = "${var.volume_device_name}"
-    volume_mount_path     = "${var.volume_mount_path}"
-    elasticsearch_image   = "${var.elasticsearch_image}"
-
-    project               = "${var.project_id}"
-    mcp_topic_name        = "${var.topic_name}"
-    mcp_subscription_name = "${var.subscription_name}"
-
+    hostname           = "${var.hostname}"
+    bucket_path        = "${var.bucket_path}"
   }
 }
 

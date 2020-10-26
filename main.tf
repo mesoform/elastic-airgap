@@ -1,6 +1,6 @@
 /* Setup google provider */
 provider "google" {
-  credentials = "${file("${var.gcp_path_to_credentials}")}"
+  credentials = "${file("${var.path_to_credentials}")}"
   project     = "${var.project_id}"
   region      = "${var.compute_region}"
 }
@@ -59,7 +59,7 @@ resource "google_compute_firewall" "elastic_fw_ext" {
 }
 
 module "elasticsearch" {
-  source = "modules/elastic-stack"
+  source = "./modules/elastic-stack"
 
   hostname                = "elasticsearch"
   project_id              = "${var.project_id}"
@@ -73,47 +73,6 @@ module "elasticsearch" {
   ssh_user                = "${var.ssh_user}"
   public_key_path         = "${var.public_key_path}"
   private_key_path        = "${var.private_key_path}"
-  topic_name              = "${var.topic_name}"
-  subscription_name       = "${var.subscription_name}"
   path_to_credentials     = "${var.path_to_credentials}"
-}
-
-module "kibana" {
-  source = "modules/elastic-stack"
-
-  hostname                = "kibana"
-  project_id              = "${var.project_id}"
-  service_account_email   = "${var.service_account_email}"
-  compute_region          = "${var.compute_region}"
-  instance_zone           = "${var.instance_zone}"
-  compute_network_name    = "${google_compute_network.elastic_net.name}"
-  compute_subnetwork_name = "${google_compute_subnetwork.elastic_subnet.name}"
-  image                   = "${var.image}"
-  volume_device_name      = "${var.volume_device_name}"
-  ssh_user                = "${var.ssh_user}"
-  public_key_path         = "${var.public_key_path}"
-  private_key_path        = "${var.private_key_path}"
-  topic_name              = "${var.topic_name}"
-  subscription_name       = "${var.subscription_name}"
-  path_to_credentials     = "${var.path_to_credentials}"
-}
-
-module "logstash" {
-  source = "modules/elastic-stack"
-
-  hostname                = "logstash"
-  project_id              = "${var.project_id}"
-  service_account_email   = "${var.service_account_email}"
-  compute_region          = "${var.compute_region}"
-  instance_zone           = "${var.instance_zone}"
-  compute_network_name    = "${google_compute_network.elastic_net.name}"
-  compute_subnetwork_name = "${google_compute_subnetwork.elastic_subnet.name}"
-  image                   = "${var.image}"
-  volume_device_name      = "${var.volume_device_name}"
-  ssh_user                = "${var.ssh_user}"
-  public_key_path         = "${var.public_key_path}"
-  private_key_path        = "${var.private_key_path}"
-  topic_name              = "${var.topic_name}"
-  subscription_name       = "${var.subscription_name}"
-  path_to_credentials     = "${var.path_to_credentials}"
+  bucket_path             = "${var.bucket_path}"
 }
