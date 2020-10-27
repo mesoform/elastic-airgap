@@ -13,5 +13,5 @@ instance_zone = "europe-west2-c"
 volume_device_name = "/dev/sdf"
 ssh_user = "centos"
 
-local_public_ip = "147.161.96.35/32"
-secure_source_ip = "147.161.96.35/32"
+local_public_ip = "147.161.85.186/32"
+secure_source_ip = "0.0.0.0/0"
