@@ -76,3 +76,22 @@ module "elasticsearch" {
   path_to_credentials     = var.path_to_credentials
   bucket_path             = var.bucket_path
 }
+
+module "kibana" {
+  source = "./modules/elastic-stack"
+
+  hostname                = "kibana"
+  project_id              = var.project_id
+  service_account_email   = var.service_account_email
+  compute_region          = var.compute_region
+  instance_zone           = var.instance_zone
+  compute_network_name    = google_compute_network.elastic_net.name
+  compute_subnetwork_name = google_compute_subnetwork.elastic_subnet.name
+  image                   = var.image
+  volume_device_name      = var.volume_device_name
+  ssh_user                = var.ssh_user
+  public_key_path         = var.public_key_path
+  private_key_path        = var.private_key_path
+  path_to_credentials     = var.path_to_credentials
+  bucket_path             = var.bucket_path
+}

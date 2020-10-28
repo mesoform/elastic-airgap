@@ -19,15 +19,16 @@ install_java() {
   java -version
 }
 
-install_elasticsearch() {
-  echo "Installing Elasticsearch"
+install_elastic_service() {
+  local elastic_service="$1"
+  echo "Installing $elastic_service"
   cd /tmp
-  gsutil cp ${bucket_path}/elasticsearch* /tmp
-  elasticsearch_file=$(ls elasticsearch* | grep rpm$ --max-count=1)
-  sudo rpm --install $elasticsearch_file
+  gsutil cp ${bucket_path}/$elastic_service* /tmp
+  package_file=$(ls $elastic_service* | grep rpm$ --max-count=1)
+  sudo rpm --install package_file
   sudo systemctl daemon-reload
-  sudo systemctl enable elasticsearch.service
-  sudo systemctl start elasticsearch.service
+  sudo systemctl enable $elastic_service.service
+  sudo systemctl start $elastic_service.service
 }
 
 main() {
@@ -40,13 +41,13 @@ main() {
 
   case ${hostname} in
   elasticsearch)
-    install_elasticsearch && echo
+    install_elastic_service ${hostname} && echo
     ;;
   logstash)
     echo "logstash"
     ;;
   kibana)
-    echo "kibana"
+    install_elastic_service ${hostname} && echo
     ;;
   *)
     echo ${hostname} "is not an Elastic stack service" && exit 1
