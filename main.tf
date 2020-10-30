@@ -94,4 +94,5 @@ module "kibana" {
   private_key_path        = var.private_key_path
   path_to_credentials     = var.path_to_credentials
   bucket_path             = var.bucket_path
+  elasticsearch_public_ip = module.elasticsearch.service_public_ip
 }

@@ -9,7 +9,7 @@ default_region = "europe-west2"
 bucket_path = "gs://mesotest/centos"
 
 compute_region = "europe-west2"
-instance_zone = "europe-west2-c"
+instance_zone = "europe-west2-b"
 volume_device_name = "/dev/sdf"
 ssh_user = "centos"
 

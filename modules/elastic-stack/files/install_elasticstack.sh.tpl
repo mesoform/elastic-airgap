@@ -19,16 +19,35 @@ install_java() {
   java -version
 }
 
+start_elastic_service() {
+  sudo systemctl daemon-reload
+  sudo systemctl enable $elastic_service.service
+  sudo systemctl start $elastic_service.service
+}
+
+config_elastic_service() {
+  case $elastic_service in
+  elasticsearch)
+    echo "config $elastic_service"
+    echo "discovery.type=single-node" >> /etc/elasticsearch/elasticsearch.yml
+    ;;
+  logstash)
+    echo "config $elastic_service"
+    ;;
+  kibana)
+    echo "config $elastic_service"
+    echo "elasticsearch.hosts: [\"http://${elasticsearch_public_ip}:9200\"]" >> /etc/kibana/kibana.yml
+    echo "server.host: 0.0.0.0" >> /etc/kibana/kibana.yml
+    ;;
+  esac
+}
+
 install_elastic_service() {
-  local elastic_service="$1"
   echo "Installing $elastic_service"
   cd /tmp
   gsutil cp ${bucket_path}/$elastic_service* /tmp
   package_file=$(ls $elastic_service* | grep rpm$ --max-count=1)
-  sudo rpm --install package_file
-  sudo systemctl daemon-reload
-  sudo systemctl enable $elastic_service.service
-  sudo systemctl start $elastic_service.service
+  sudo rpm --install $package_file
 }
 
 main() {
@@ -37,20 +56,18 @@ main() {
     exit 1
   fi
 
+  elastic_service=${hostname}
+
   install_java && echo
 
-  case ${hostname} in
-  elasticsearch)
-    install_elastic_service ${hostname} && echo
-    ;;
-  logstash)
-    echo "logstash"
-    ;;
-  kibana)
-    install_elastic_service ${hostname} && echo
+  case $elastic_service in
+  elasticsearch | logstash | kibana)
+    install_elastic_service && echo
+    config_elastic_service && echo
+    start_elastic_service && echo
     ;;
   *)
-    echo ${hostname} "is not an Elastic stack service" && exit 1
+    echo $elastic_service "is not an Elastic stack service" && exit 1
     ;;
   esac
 }
