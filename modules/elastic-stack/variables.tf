@@ -63,6 +63,6 @@ variable "disk_size" {
 
 variable "bucket_path" {}
 
-variable "elasticsearch_public_ip" {
+variable "elasticsearch_priv_ip" {
   default="localhost"
 }

@@ -4,7 +4,7 @@ data "template_file" "install_elastic_stack" {
   vars = {
     hostname    = var.hostname
     bucket_path = var.bucket_path
-    elasticsearch_public_ip = var.elasticsearch_public_ip
+    elasticsearch_priv_ip = var.elasticsearch_priv_ip
   }
 }
 
