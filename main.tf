@@ -53,6 +53,7 @@ resource "google_compute_firewall" "elastic_fw_ext" {
       "22",          # SSH
       "80",          # HTTP
       "443",         # HTTPS
+      "9200",        # Elastic Stack: Elasticsearch JSON interface
       "5601",        # Elastic Stack: Kibana web interface
     ]
   }

@@ -28,15 +28,18 @@ start_elastic_service() {
 config_elastic_service() {
   case $elastic_service in
   elasticsearch)
-    echo "config $elastic_service"
-    echo "network.host: 0.0.0.0" >> /etc/elasticsearch/elasticsearch.yml
+    local priv_ip=$(hostname -I)
+    echo "#elastic-airgap: config $elastic_service" >> /etc/elasticsearch/elasticsearch.yml
+    echo "node.name: $elastic_service" >> /etc/elasticsearch/elasticsearch.yml
+    echo "cluster.initial_master_nodes: [\"$elastic_service\"]" >> /etc/elasticsearch/elasticsearch.yml
+    echo "network.host: $priv_ip" >> /etc/elasticsearch/elasticsearch.yml
     echo "discovery.seed_hosts: [\"127.0.0.1\", \"[::1]\"]" >> /etc/elasticsearch/elasticsearch.yml
     ;;
   logstash)
-    echo "config $elastic_service"
+    echo "#elastic-airgap: config $elastic_service" >> /etc/logstash/logstash.yml
     ;;
   kibana)
-    echo "config $elastic_service"
+    echo "#elastic-airgap: config $elastic_service" >> /etc/kibana/kibana.yml
     echo "elasticsearch.hosts: [\"http://${elasticsearch_priv_ip}:9200\"]" >> /etc/kibana/kibana.yml
     echo "server.host: 0.0.0.0" >> /etc/kibana/kibana.yml
     ;;
