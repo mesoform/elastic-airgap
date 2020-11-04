@@ -66,3 +66,11 @@ variable "bucket_path" {}
 variable "elasticsearch_priv_ip" {
   default="0.0.0.0"
 }
+
+variable "topic_name" {
+  default="test-topic"
+}
+
+variable "subscription_name" {
+  default="test-subscription"
+}

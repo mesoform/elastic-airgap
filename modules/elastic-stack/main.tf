@@ -2,9 +2,12 @@ data "template_file" "install_elastic_stack" {
   template = "${file("modules/elastic-stack/files/install_elasticstack.sh.tpl")}"
 
   vars = {
-    hostname    = var.hostname
-    bucket_path = var.bucket_path
+    hostname          = var.hostname
+    bucket_path       = var.bucket_path
     elasticsearch_priv_ip = var.elasticsearch_priv_ip
+    project_id        = var.project_id
+    topic_name        = var.topic_name
+    subscription_name = var.subscription_name
   }
 }
 
@@ -47,7 +50,7 @@ resource "google_compute_instance" "elastic_stack" {
 
   provisioner "file" {
     source = var.path_to_credentials
-    destination = "~/.ssh/mcp-service.json"
+    destination = "~/.ssh/mesoform-testing.json"
 
     connection {
       type = "ssh"

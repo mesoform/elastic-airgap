@@ -25,6 +25,34 @@ start_elastic_service() {
   sudo systemctl start $elastic_service.service
 }
 
+generate_logstash_config() {
+echo "input {
+  google_pubsub {
+    project_id => \"${project_id}\"
+    topic => \""${topic_name}"\"
+    subscription => \""${subscription_name}"\"
+    include_metadata => true
+    codec => \"json\"
+    tags => [\"pubsub\"]
+  }
+}
+
+filter {
+  mutate { convert => [\"container.labels.org_label-schema_build-date\",\"string\"] }
+  mutate { convert => [\"docker.container.labels.org_label-schema_build-date\",\"string\"] }
+}
+
+output {
+  if \"pubsub\" in [tags] {
+    elasticsearch {
+      hosts    => \"${elasticsearch_priv_ip}:9200\"
+      index => \"${topic_name}-%%{+yyyy.MM.dd}\"
+    }
+  }
+}
+" > /etc/logstash/conf.d/logstash.conf
+}
+
 config_elastic_service() {
   case $elastic_service in
   elasticsearch)
@@ -36,7 +64,9 @@ config_elastic_service() {
     echo "discovery.seed_hosts: [\"127.0.0.1\", \"[::1]\"]" >> /etc/elasticsearch/elasticsearch.yml
     ;;
   logstash)
-    echo "#elastic-airgap: config $elastic_service" >> /etc/logstash/logstash.yml
+    plugins_file=$(ls $elastic_service* | grep zip$ --max-count=1)
+    /usr/share/logstash/bin/logstash-plugin install file://$(pwd)/$plugins_file
+    generate_logstash_config
     ;;
   kibana)
     echo "#elastic-airgap: config $elastic_service" >> /etc/kibana/kibana.yml

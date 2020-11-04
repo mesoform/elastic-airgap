@@ -42,3 +42,7 @@ variable "local_public_ip" {}
 variable "secure_source_ip" {}
 
 variable "bucket_path" {}
+
+variable "expiration_policy" {
+  default = "604800s"
+}
