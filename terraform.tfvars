@@ -15,3 +15,6 @@ ssh_user = "centos"
 
 local_public_ip = "147.161.85.186/32"
 secure_source_ip = "0.0.0.0/0"
+
+topic_name = "topic-mesoform-testing"
+subscription_name = "subscription-mesoform-testing"

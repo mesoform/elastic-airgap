@@ -46,3 +46,11 @@ variable "bucket_path" {}
 variable "expiration_policy" {
   default = "604800s"
 }
+
+variable "topic_name" {
+  default="test-topic"
+}
+
+variable "subscription_name" {
+  default="test-subscription"
+}

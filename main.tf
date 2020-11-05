@@ -58,12 +58,12 @@ resource "google_compute_firewall" "elastic_fw_ext" {
   }
 }
 
-module "export_logging" {
-  source = "./modules/export-logging"
-
-  project_id = var.project_id
-  expiration_policy = var.expiration_policy
-}
+#module "export_logging" {
+#  source = "./modules/export-logging"
+#
+#  project_id = var.project_id
+#  expiration_policy = var.expiration_policy
+#}
 
 module "elasticsearch" {
   source = "./modules/elastic-stack"
@@ -122,6 +122,8 @@ module "logstash" {
   path_to_credentials     = var.path_to_credentials
   bucket_path             = var.bucket_path
   elasticsearch_priv_ip   = module.elasticsearch.service_priv_ip
-  topic_name              = module.export_logging.topic_name
-  subscription_name       = module.export_logging.subscription_name
+  topic_name              = var.topic_name
+  subscription_name       = var.subscription_name
+#  topic_name              = module.export_logging.topic_name
+#  subscription_name       = module.export_logging.subscription_name
 }
