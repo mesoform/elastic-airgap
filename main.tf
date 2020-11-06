@@ -44,7 +44,7 @@ resource "google_compute_firewall" "elastic_fw_ext" {
   name          = "${var.name}-ext-ports"
   network       = google_compute_network.elastic_net.name
 //  source_tags = ["${var.name}-servers"]
-  source_ranges = ["${var.local_public_ip}", "${var.secure_source_ip}"]
+  source_ranges = ["${var.whatismyip}", "${var.secure_source_ip}"]
 
   allow {
     protocol = "tcp"

@@ -12,8 +12,6 @@ variable "service_account_email" {
 
 variable "project_id" {}
 
-variable "default_region" {}
-
 variable "compute_region" {
   default = "europe-west2"
   description = "Default gcp region to manage resources in"
@@ -37,7 +35,7 @@ variable "public_key_path" {}
 
 variable "private_key_path" {}
 
-variable "local_public_ip" {}
+variable "whatismyip" {}
 
 variable "secure_source_ip" {}
 
