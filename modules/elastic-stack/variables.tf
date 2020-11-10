@@ -43,8 +43,6 @@ variable "compute_subnetwork_name" {
   description = "The name of the subnetwork attached to interface in this instance"
 }
 
-variable "ssh_user" {}
-
 variable "public_key_path" {}
 
 variable "private_key_path" {}

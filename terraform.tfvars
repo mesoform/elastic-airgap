@@ -10,7 +10,6 @@ bucket_path = "gs://mesotest/centos"
 compute_region = "europe-west2"
 instance_zone = "europe-west2-b"
 volume_device_name = "/dev/sdf"
-ssh_user = "centos"
 
 whatismyip = "147.161.85.186/32"
 secure_source_ip = "0.0.0.0/0"

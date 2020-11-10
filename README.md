@@ -63,7 +63,6 @@ Clone the `elastic-airgap` github repository and modify the variables file `terr
     compute_region = "europe-west2"                                      # region to create resources
     instance_zone = "europe-west2-b"                                     # zone to create compute instances
     volume_device_name = "/dev/sdf"                                      # volume device name
-    ssh_user = "centos"                                                  # default centos username
 
     whatismyip = "147.161.85.186/32"                                     # local public ip to access http and ssh on resources
     secure_source_ip = "0.0.0.0/0"                                       # any secure ip to access http and ssh on resources

@@ -29,8 +29,6 @@ variable "image" {
 
 variable "volume_device_name" {}
 
-variable "ssh_user" {}
-
 variable "public_key_path" {}
 
 variable "private_key_path" {}
