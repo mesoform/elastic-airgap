@@ -27,6 +27,18 @@ variable "image" {
   description = "The image to initialise the disk for instance."
 }
 
+variable "elasticsearch_machine_type" {
+  default = "e2-medium"
+}
+
+variable "kibana_machine_type" {
+  default = "e2-medium"
+}
+
+variable "logstash_machine_type" {
+  default = "e2-medium"
+}
+
 variable "volume_device_name" {}
 
 variable "public_key_path" {}
