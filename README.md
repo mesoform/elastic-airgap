@@ -44,6 +44,9 @@ Then push all those files to a GCS Storage bucket:
     java runtime environment: jre-8u271-linux-x64.tar.gz
     logstash plugins:         logstash-7.9.3-offline-plugins.zip
 
+
+### Deployment
+
 Clone the `elastic-airgap` github repository and modify the variables file `terraform.tfvars` with the appropriate values:
 
    E.g: 
@@ -68,11 +71,10 @@ Clone the `elastic-airgap` github repository and modify the variables file `terr
     topic_name = "topic-mesoform-testing"                                # existing topic to export logging to logstash
     subscription_name = "subscription-mesoform-testing"                  # existing subscription to export logging to logstash
 
-   
-### Deployment
-
 - To deploy resources initialise terraform and apply the changes:
 
    `$ cd elastic-airgap/`
+   
    `$ terraform12.28 init`
+   
    `$ terraform12.28 apply`
