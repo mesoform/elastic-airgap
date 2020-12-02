@@ -3,6 +3,21 @@
 # Elastic Stack Offline Installation Script
 #
 
+mount_volume() {
+  device_name_input=${volume_device_name}
+
+  echo "device name: $device_name_input" >> /var/log/syslog
+
+  if [ "$device_name_input" != '' ]; then
+    sudo mkfs.ext4 -m 0 -F -E lazy_itable_init=0,lazy_journal_init=0,discard $device_name_input
+    sudo mkdir -p $MOUNT_PATH
+    sudo mount -o discard,defaults $device_name_input $MOUNT_PATH
+    sudo chmod a+w $MOUNT_PATH
+    UUID=$(sudo blkid -s UUID -o value $device_name_input)
+    echo $UUID $MOUNT_PATH ext4 discard,defaults,nofail 0 2 | sudo tee -a /etc/fstab
+  fi
+}
+
 install_java() {
   echo "Installing Java Runtime Environment (JRE)"
   cd /tmp
@@ -54,14 +69,17 @@ output {
 }
 
 config_elastic_service() {
+  config_file=/etc/$elastic_service/$elastic_service.yml
+
   case $elastic_service in
   elasticsearch)
     local priv_ip=$(hostname -I)
-    echo "#elastic-airgap: config $elastic_service" >> /etc/elasticsearch/elasticsearch.yml
-    echo "node.name: $elastic_service" >> /etc/elasticsearch/elasticsearch.yml
-    echo "cluster.initial_master_nodes: [\"$elastic_service\"]" >> /etc/elasticsearch/elasticsearch.yml
-    echo "network.host: $priv_ip" >> /etc/elasticsearch/elasticsearch.yml
-    echo "discovery.seed_hosts: [\"127.0.0.1\", \"[::1]\"]" >> /etc/elasticsearch/elasticsearch.yml
+    echo "#elastic-airgap: config $elastic_service" >> $config_file
+    echo "node.name: $elastic_service" >> $config_file
+    echo "cluster.initial_master_nodes: [\"$elastic_service\"]" >> $config_file
+    echo "network.host: $priv_ip" >> $config_file
+    echo "discovery.seed_hosts: [\"127.0.0.1\", \"[::1]\"]" >> $config_file
+    sed -i "s/path.data:.*$//g" $config_file && sudo mkdir -p $MOUNT_PATH && echo "path.data: $MOUNT_PATH" >> $config_file
     ;;
   logstash)
     plugins_file=$(ls $elastic_service* | grep zip$ --max-count=1)
@@ -69,9 +87,9 @@ config_elastic_service() {
     generate_logstash_config
     ;;
   kibana)
-    echo "#elastic-airgap: config $elastic_service" >> /etc/kibana/kibana.yml
-    echo "elasticsearch.hosts: [\"http://${elasticsearch_priv_ip}:9200\"]" >> /etc/kibana/kibana.yml
-    echo "server.host: 0.0.0.0" >> /etc/kibana/kibana.yml
+    echo "#elastic-airgap: config $elastic_service" >> $config_file
+    echo "elasticsearch.hosts: [\"http://${elasticsearch_priv_ip}:9200\"]" >> $config_file
+    echo "server.host: 0.0.0.0" >> $config_file
     ;;
   esac
 }
@@ -91,6 +109,10 @@ main() {
   fi
 
   elastic_service=${hostname}
+
+  MOUNT_PATH=${volume_mount_path}/$elastic_service
+
+  mount_volume
 
   install_java && echo
 

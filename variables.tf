@@ -39,8 +39,6 @@ variable "logstash_machine_type" {
   default = "e2-medium"
 }
 
-variable "volume_device_name" {}
-
 variable "public_key_path" {}
 
 variable "private_key_path" {}

@@ -3,11 +3,12 @@ variable "hostname" {
 }
 
 variable "volume_device_name" {
+  default     = "/dev/sdb"
   description = "The device name. E.g. /dev/sdf"
 }
 
 variable "volume_mount_path" {
-  default     = "/mnt/elastic"
+  default     = "/var"
   description = "The volume mount path"
 }
 
@@ -41,6 +42,10 @@ variable "compute_network_name" {
 
 variable "compute_subnetwork_name" {
   description = "The name of the subnetwork attached to interface in this instance"
+}
+
+variable "ssh_user" {
+  default = "centos"
 }
 
 variable "public_key_path" {}

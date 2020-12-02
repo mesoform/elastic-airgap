@@ -77,7 +77,6 @@ module "elasticsearch" {
   compute_subnetwork_name = google_compute_subnetwork.elastic_subnet.name
   image                   = var.image
   machine_type            = var.elasticsearch_machine_type
-  volume_device_name      = var.volume_device_name
   public_key_path         = var.public_key_path
   private_key_path        = var.private_key_path
   path_to_credentials     = var.path_to_credentials
@@ -96,7 +95,6 @@ module "kibana" {
   compute_subnetwork_name = google_compute_subnetwork.elastic_subnet.name
   image                   = var.image
   machine_type            = var.kibana_machine_type
-  volume_device_name      = var.volume_device_name
   public_key_path         = var.public_key_path
   private_key_path        = var.private_key_path
   path_to_credentials     = var.path_to_credentials
@@ -116,7 +114,6 @@ module "logstash" {
   compute_subnetwork_name = google_compute_subnetwork.elastic_subnet.name
   image                   = var.image
   machine_type            = var.logstash_machine_type
-  volume_device_name      = var.volume_device_name
   public_key_path         = var.public_key_path
   private_key_path        = var.private_key_path
   path_to_credentials     = var.path_to_credentials

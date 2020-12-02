@@ -9,7 +9,6 @@ bucket_path = "gs://mesotest/centos"
 
 compute_region = "europe-west2"
 instance_zone = "europe-west2-b"
-volume_device_name = "/dev/sdf"
 elasticsearch_machine_type = "e2-medium"
 kibana_machine_type = "e2-medium"
 logstash_machine_type = "e2-medium"
