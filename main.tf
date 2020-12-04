@@ -81,6 +81,7 @@ module "elasticsearch" {
   private_key_path        = var.private_key_path
   path_to_credentials     = var.path_to_credentials
   bucket_path             = var.bucket_path
+  elastic_pwd             = var.elastic_pwd
 }
 
 module "kibana" {
@@ -100,6 +101,7 @@ module "kibana" {
   path_to_credentials     = var.path_to_credentials
   bucket_path             = var.bucket_path
   elasticsearch_priv_ip   = module.elasticsearch.service_priv_ip
+  elastic_pwd             = var.elastic_pwd
 }
 
 module "logstash" {
@@ -121,6 +123,7 @@ module "logstash" {
   elasticsearch_priv_ip   = module.elasticsearch.service_priv_ip
   topic_name              = var.topic_name
   subscription_name       = var.subscription_name
+  elastic_pwd             = var.elastic_pwd
 #  topic_name              = module.export_logging.topic_name
 #  subscription_name       = module.export_logging.subscription_name
 }

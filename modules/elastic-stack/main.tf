@@ -10,6 +10,7 @@ data "template_file" "install_elastic_stack" {
     project_id            = var.project_id
     topic_name            = var.topic_name
     subscription_name     = var.subscription_name
+    elastic_pwd           = var.elastic_pwd
   }
 }
 

@@ -60,3 +60,7 @@ variable "topic_name" {
 variable "subscription_name" {
   default="test-subscription"
 }
+
+variable "elastic_pwd" {
+  default="3L4$t1CP4$$w0rD!"
+}
