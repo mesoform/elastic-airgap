@@ -43,15 +43,12 @@ set_users_passwords() {
       && break
     sleep 5
   done
-
-#set passwords for various users
-  for elastic_user in "kibana" "kibana_system" "logstash_system" "apm_system" "beats_system" "elastic"
+#set passwords for some built-in system users
+  for elastic_user in "kibana_system" "elastic"
   do
-    elastic_user_pwd=$ELASTIC_PWD
     curl -u "elastic:$BOOTSTRAP_PWD" \
       -XPOST "http://$ELASTIC_SERVICE:9200/_xpack/security/user/$elastic_user/_password" \
-      -d'{"password":"$elastic_user_pwd"}' -H "Content-Type: application/json"
-    printf "%s=%s\n" "$elastic_user" "$elastic_user_pwd" >> /tmp/passwords.txt
+      -d'{"password":"'"$ELASTIC_PWD"'"}' -H "Content-Type: application/json"
   done
 }
 
@@ -86,6 +83,8 @@ output {
     elasticsearch {
       hosts    => \"${elasticsearch_priv_ip}:9200\"
       index => \"${topic_name}-%%{+yyyy.MM.dd}\"
+      user => elastic
+      password => $ELASTIC_PWD
     }
   }
 }
@@ -107,8 +106,7 @@ config_elastic_service() {
     echo "xpack.security.enabled: true" >> $config_file
     echo "xpack.security.transport.ssl.enabled: true" >> $config_file
     BOOTSTRAP_PWD="$(date +%s | sha256sum | base64 | head -c 32)"
-    echo "$BOOTSTRAP_PWD" > /tmp/bootstrap_pwd.log
-    printf "%s" "$BOOTSTRAP_PWD" | /usr/share/elasticsearch/elasticsearch-keystore add -x "bootstrap.password"
+    printf "%s" "$BOOTSTRAP_PWD" | /usr/share/elasticsearch/bin/elasticsearch-keystore add -x "bootstrap.password"
     ;;
   logstash)
     plugins_file=$(ls $ELASTIC_SERVICE* | grep zip$ --max-count=1)

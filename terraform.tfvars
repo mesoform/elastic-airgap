@@ -19,4 +19,4 @@ secure_source_ip = "0.0.0.0/0"
 topic_name = "topic-mesoform-testing"
 subscription_name = "subscription-mesoform-testing"
 
-elastic_pwd = "3L4sT1CP4Ssw0rD"
+elastic_pwd = "e1l2a3s4t5i6c"
