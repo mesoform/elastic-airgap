@@ -55,7 +55,6 @@ Clone the `elastic-airgap` github repository and modify the variables file `terr
     path_to_credentials = "~/.ssh/credentials.json"                      # service account credentials
     service_account_email = "mesoform@mesoform.iam.gserviceaccount.com"  # service account email
     public_key_path = "~/.ssh/id_rsa.pub"                                # auth public rsa key
-    private_key_path = "~/.ssh/id_rsa"                                   # auth private rsa key
     bucket_path = "gs://mesotest/centos"                                 # gcs bucket where offline elastic+java packages are stored
 
     network_prefix = "elastic-stack"                                     # networking resources prefix (net/subnet/fw)

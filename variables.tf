@@ -1,5 +1,9 @@
-variable "name" {
-  description = "Human readable name used as prefix to generated names."
+variable "project_id" {
+  description = "GCP project ID"
+}
+
+variable "network_prefix" {
+  description = "Human readable name used as prefix to generated names"
 }
 
 variable "path_to_credentials" {
@@ -10,7 +14,13 @@ variable "service_account_email" {
   description = "Service account client email"
 }
 
-variable "project_id" {}
+variable "public_key_path" {
+  description = "Auth public rsa key"
+}
+
+variable "bucket_path" {
+  description = "GCS bucket where offline elastic+java packages are stored"
+}
 
 variable "compute_region" {
   default = "europe-west2"
@@ -39,15 +49,13 @@ variable "logstash_machine_type" {
   default = "e2-medium"
 }
 
-variable "public_key_path" {}
+variable "whatismyip" {
+  description = "Local public IP to access HTTP and ssh on resources"
+}
 
-variable "private_key_path" {}
-
-variable "whatismyip" {}
-
-variable "secure_source_ip" {}
-
-variable "bucket_path" {}
+variable "secure_source_ip" {
+  description = "Any secure IP to access HTTP and ssh on resources"
+}
 
 variable "expiration_policy" {
   default = "604800s"
@@ -62,5 +70,5 @@ variable "subscription_name" {
 }
 
 variable "elastic_pwd" {
-  default="3L4$t1CP4$$w0rD!"
+  default="e1l2a3s4t5i6c"
 }

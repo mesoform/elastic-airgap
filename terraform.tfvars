@@ -1,12 +1,10 @@
-name = "elastic-stack"
-
+project_id = "mesoform-testing"
 path_to_credentials = "~/.ssh/mesoform-testing.json"
 service_account_email = "mesotest@mesoform-testing.iam.gserviceaccount.com"
 public_key_path = "~/.ssh/id_rsa.pub"
-private_key_path = "~/.ssh/id_rsa"
-project_id = "mesoform-testing"
 bucket_path = "gs://mesotest/centos"
 
+network_prefix = "elastic-stack"
 compute_region = "europe-west2"
 instance_zone = "europe-west2-b"
 elasticsearch_machine_type = "e2-medium"

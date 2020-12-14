@@ -50,8 +50,6 @@ variable "ssh_user" {
 
 variable "public_key_path" {}
 
-variable "private_key_path" {}
-
 variable "path_to_credentials" {}
 
 variable "disk_type" {

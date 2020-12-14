@@ -51,18 +51,6 @@ resource "google_compute_instance" "elastic_stack" {
     ssh-keys = "${var.ssh_user}:${file(var.public_key_path)}"
   }
 
-  provisioner "file" {
-    source = var.path_to_credentials
-    destination = "~/.ssh/mesoform-testing.json"
-
-    connection {
-      type = "ssh"
-      user = "centos"
-      private_key = file("${var.private_key_path}")
-      host = self.network_interface.0.access_config.0.nat_ip
-    }
-  }
-
   metadata_startup_script = data.template_file.install_elastic_stack.rendered
 }
 
