@@ -9,7 +9,9 @@ mount_volume() {
   echo "device name: $device_name_input" >> /var/log/syslog
 
   if [ "$device_name_input" != '' ]; then
-    sudo mkfs.ext4 -m 0 -F -E lazy_itable_init=0,lazy_journal_init=0,discard $device_name_input
+    if [[ -z $(blkid | grep "$device_name_input.*ext4") ]]; then
+      sudo mkfs.ext4 -m 0 -F -E lazy_itable_init=0,lazy_journal_init=0,discard $device_name_input
+    fi
     sudo mkdir -p $MOUNT_PATH
     sudo mount -o discard,defaults $device_name_input $MOUNT_PATH
     sudo chmod a+w $MOUNT_PATH
@@ -82,7 +84,7 @@ output {
   if \"pubsub\" in [tags] {
     elasticsearch {
       hosts    => \"${elasticsearch_priv_ip}:9200\"
-      index => \"${topic_name}-%%{+yyyy.MM.dd}\"
+      index => \"pubsub-${topic_name}-%%{+yyyy.MM.dd}\"
       user => elastic
       password => $ELASTIC_PWD
     }
@@ -102,7 +104,7 @@ config_elastic_service() {
     echo "cluster.initial_master_nodes: [\"$ELASTIC_SERVICE\"]" >> $config_file
     echo "network.host: $priv_ip" >> $config_file
     echo "discovery.seed_hosts: [\"127.0.0.1\", \"[::1]\"]" >> $config_file
-    sed -i "s/path.data:.*$//g" $config_file && sudo mkdir -p $MOUNT_PATH && echo "path.data: $MOUNT_PATH" >> $config_file
+    sed -i "s/path.data:.*$//g" $config_file && echo "path.data: $MOUNT_PATH" >> $config_file
     echo "xpack.security.enabled: true" >> $config_file
     echo "xpack.security.transport.ssl.enabled: true" >> $config_file
     BOOTSTRAP_PWD="$(date +%s | sha256sum | base64 | head -c 32)"

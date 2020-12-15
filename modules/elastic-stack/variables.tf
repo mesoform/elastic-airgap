@@ -50,8 +50,6 @@ variable "ssh_user" {
 
 variable "public_key_path" {}
 
-variable "path_to_credentials" {}
-
 variable "disk_type" {
   default = "pd-ssd"
   description = "The GCE disk type. One of pd-standard or pd-ssd"

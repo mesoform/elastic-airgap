@@ -6,10 +6,6 @@ variable "network_prefix" {
   description = "Human readable name used as prefix to generated names"
 }
 
-variable "path_to_credentials" {
-  description = "Path to gcp service account key file"
-}
-
 variable "service_account_email" {
   description = "Service account client email"
 }
@@ -47,10 +43,6 @@ variable "kibana_machine_type" {
 
 variable "logstash_machine_type" {
   default = "e2-medium"
-}
-
-variable "whatismyip" {
-  description = "Local public IP to access HTTP and ssh on resources"
 }
 
 variable "secure_source_ip" {

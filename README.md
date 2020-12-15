@@ -44,15 +44,13 @@ Then push all those files to a GCS Storage bucket:
     java runtime environment: jre-8u271-linux-x64.tar.gz
     logstash plugins:         logstash-7.9.3-offline-plugins.zip
 
-
 ### Deployment
 
 Clone the `elastic-airgap` github repository and modify the variables file `terraform.tfvars` with the appropriate values:
 
    E.g:
     
-    project_id = "elastic-airgap"                                        # project id
-    path_to_credentials = "~/.ssh/credentials.json"                      # service account credentials
+    project_id = "mesoform-testing                                       # project id
     service_account_email = "mesoform@mesoform.iam.gserviceaccount.com"  # service account email
     public_key_path = "~/.ssh/id_rsa.pub"                                # auth public rsa key
     bucket_path = "gs://mesotest/centos"                                 # gcs bucket where offline elastic+java packages are stored
@@ -64,8 +62,7 @@ Clone the `elastic-airgap` github repository and modify the variables file `terr
     kibana_machine_type = "e2-medium"                                    # Kibana instance machine type
     logstash_machine_type = "e2-medium"                                  # Logstash instance machine type
 
-    whatismyip = "147.161.85.186/32"                                     # local public ip to access http and ssh on resources
-    secure_source_ip = "0.0.0.0/0"                                       # any secure ip to access http and ssh on resources
+    secure_source_ip = "123.45.678.90/32"                               # any secure ip to access http and ssh on resources
 
     topic_name = "topic-mesoform-testing"                                # existing topic to export logging to logstash
     subscription_name = "subscription-mesoform-testing"                  # existing subscription to export logging to logstash

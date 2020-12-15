@@ -1,6 +1,5 @@
 /* Setup google provider */
 provider "google" {
-  credentials = file("${var.path_to_credentials}")
   project     = var.project_id
   region      = var.compute_region
 }
@@ -44,7 +43,7 @@ resource "google_compute_firewall" "elastic_fw_ext" {
   name          = "${var.network_prefix}-ext-ports"
   network       = google_compute_network.elastic_net.name
 //  source_tags = ["${var.network_prefix}-servers"]
-  source_ranges = ["${var.whatismyip}", "${var.secure_source_ip}"]
+  source_ranges = ["${var.secure_source_ip}"]
 
   allow {
     protocol = "tcp"
@@ -78,7 +77,6 @@ module "elasticsearch" {
   image                   = var.image
   machine_type            = var.elasticsearch_machine_type
   public_key_path         = var.public_key_path
-  path_to_credentials     = var.path_to_credentials
   bucket_path             = var.bucket_path
   elastic_pwd             = var.elastic_pwd
 }
@@ -96,7 +94,6 @@ module "kibana" {
   image                   = var.image
   machine_type            = var.kibana_machine_type
   public_key_path         = var.public_key_path
-  path_to_credentials     = var.path_to_credentials
   bucket_path             = var.bucket_path
   elasticsearch_priv_ip   = module.elasticsearch.service_priv_ip
   elastic_pwd             = var.elastic_pwd
@@ -115,7 +112,6 @@ module "logstash" {
   image                   = var.image
   machine_type            = var.logstash_machine_type
   public_key_path         = var.public_key_path
-  path_to_credentials     = var.path_to_credentials
   bucket_path             = var.bucket_path
   elasticsearch_priv_ip   = module.elasticsearch.service_priv_ip
   topic_name              = var.topic_name
