@@ -6,6 +6,10 @@ variable "network_prefix" {
   description = "Human readable name used as prefix to generated names"
 }
 
+variable "subnet_cidr_range" {
+  description = "The range of internal addresses that are owned by this subnetwork. For example, 10.0.0.0/8 or 192.168.0.0/16"
+}
+
 variable "service_account_email" {
   description = "Service account client email"
 }

@@ -4,6 +4,7 @@ public_key_path = "~/.ssh/id_rsa.pub"
 bucket_path = "gs://mesotest/centos"
 
 network_prefix = "elastic-stack"
+subnet_cidr_range = "10.65.1.0/24"
 compute_region = "europe-west2"
 instance_zone = "europe-west2-b"
 elasticsearch_machine_type = "e2-medium"

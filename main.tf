@@ -11,8 +11,8 @@ resource "google_compute_network" "elastic_net" {
 }
 
 resource "google_compute_subnetwork" "elastic_subnet" {
-  name          = "${var.network_prefix}-subnetwork651"
-  ip_cidr_range = "10.65.1.0/24"
+  name          = "${var.network_prefix}-subnetwork"
+  ip_cidr_range = var.subnet_cidr_range
   region        = var.compute_region
   network       = google_compute_network.elastic_net.self_link
 }
