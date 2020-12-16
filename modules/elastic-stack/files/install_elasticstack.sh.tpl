@@ -3,6 +3,23 @@
 # Elastic Stack Offline Installation Script
 #
 
+mount_volume() {
+  device_name_input=${volume_device_name}
+
+  echo "device name: $device_name_input" >> /var/log/syslog
+
+  if [ "$device_name_input" != '' ]; then
+    if [[ -z $(blkid | grep "$device_name_input.*ext4") ]]; then
+      sudo mkfs.ext4 -m 0 -F -E lazy_itable_init=0,lazy_journal_init=0,discard $device_name_input
+    fi
+    sudo mkdir -p $MOUNT_PATH
+    sudo mount -o discard,defaults $device_name_input $MOUNT_PATH
+    sudo chmod a+w $MOUNT_PATH
+    UUID=$(sudo blkid -s UUID -o value $device_name_input)
+    echo $UUID $MOUNT_PATH ext4 discard,defaults,nofail 0 2 | sudo tee -a /etc/fstab
+  fi
+}
+
 install_java() {
   echo "Installing Java Runtime Environment (JRE)"
   cd /tmp
@@ -19,10 +36,31 @@ install_java() {
   java -version
 }
 
+set_users_passwords() {
+#wait for elasticsearch to be available
+  while true
+  do
+    curl --fail -u "elastic:$BOOTSTRAP_PWD" \
+      "http://$ELASTIC_SERVICE:9200/_cluster/health?wait_for_status=yellow" \
+      && break
+    sleep 5
+  done
+#set passwords for some built-in system users
+  for elastic_user in "kibana_system" "elastic"
+  do
+    curl -u "elastic:$BOOTSTRAP_PWD" \
+      -XPOST "http://$ELASTIC_SERVICE:9200/_xpack/security/user/$elastic_user/_password" \
+      -d'{"password":"'"$ELASTIC_PWD"'"}' -H "Content-Type: application/json"
+  done
+}
+
 start_elastic_service() {
   sudo systemctl daemon-reload
-  sudo systemctl enable $elastic_service.service
-  sudo systemctl start $elastic_service.service
+  sudo systemctl enable $ELASTIC_SERVICE.service
+  sudo systemctl start $ELASTIC_SERVICE.service
+  if [ $ELASTIC_SERVICE == "elasticsearch" ]; then
+    set_users_passwords
+  fi
 }
 
 generate_logstash_config() {
@@ -46,7 +84,9 @@ output {
   if \"pubsub\" in [tags] {
     elasticsearch {
       hosts    => \"${elasticsearch_priv_ip}:9200\"
-      index => \"${topic_name}-%%{+yyyy.MM.dd}\"
+      index => \"pubsub-${topic_name}-%%{+yyyy.MM.dd}\"
+      user => elastic
+      password => $ELASTIC_PWD
     }
   }
 }
@@ -54,33 +94,45 @@ output {
 }
 
 config_elastic_service() {
-  case $elastic_service in
+  config_file=/etc/$ELASTIC_SERVICE/$ELASTIC_SERVICE.yml
+
+  case $ELASTIC_SERVICE in
   elasticsearch)
     local priv_ip=$(hostname -I)
-    echo "#elastic-airgap: config $elastic_service" >> /etc/elasticsearch/elasticsearch.yml
-    echo "node.name: $elastic_service" >> /etc/elasticsearch/elasticsearch.yml
-    echo "cluster.initial_master_nodes: [\"$elastic_service\"]" >> /etc/elasticsearch/elasticsearch.yml
-    echo "network.host: $priv_ip" >> /etc/elasticsearch/elasticsearch.yml
-    echo "discovery.seed_hosts: [\"127.0.0.1\", \"[::1]\"]" >> /etc/elasticsearch/elasticsearch.yml
+    echo "#elastic-airgap: config $ELASTIC_SERVICE" >> $config_file
+    echo "node.name: $ELASTIC_SERVICE" >> $config_file
+    echo "cluster.initial_master_nodes: [\"$ELASTIC_SERVICE\"]" >> $config_file
+    echo "network.host: $priv_ip" >> $config_file
+    echo "discovery.seed_hosts: [\"127.0.0.1\", \"[::1]\"]" >> $config_file
+    sed -i "s/path.data:.*$//g" $config_file && echo "path.data: $MOUNT_PATH" >> $config_file
+    echo "xpack.security.enabled: true" >> $config_file
+    echo "xpack.security.transport.ssl.enabled: true" >> $config_file
+    BOOTSTRAP_PWD="$(date +%s | sha256sum | base64 | head -c 32)"
+    printf "%s" "$BOOTSTRAP_PWD" | /usr/share/elasticsearch/bin/elasticsearch-keystore add -x "bootstrap.password"
     ;;
   logstash)
-    plugins_file=$(ls $elastic_service* | grep zip$ --max-count=1)
+    plugins_file=$(ls $ELASTIC_SERVICE* | grep zip$ --max-count=1)
     /usr/share/logstash/bin/logstash-plugin install file://$(pwd)/$plugins_file
     generate_logstash_config
     ;;
   kibana)
-    echo "#elastic-airgap: config $elastic_service" >> /etc/kibana/kibana.yml
-    echo "elasticsearch.hosts: [\"http://${elasticsearch_priv_ip}:9200\"]" >> /etc/kibana/kibana.yml
-    echo "server.host: 0.0.0.0" >> /etc/kibana/kibana.yml
+    echo "#elastic-airgap: config $ELASTIC_SERVICE" >> $config_file
+    echo "elasticsearch.hosts: [\"http://${elasticsearch_priv_ip}:9200\"]" >> $config_file
+    echo "server.host: 0.0.0.0" >> $config_file
+    echo "elasticsearch.username: \"kibana_system\"" >> $config_file
+    echo "elasticsearch.password: \"$ELASTIC_PWD\"" >> $config_file
+    echo "xpack.security.encryptionKey: \"$(date +%s | sha256sum | base64 | head -c 32)\"" >> $config_file
+    echo "xpack.security.session.idleTimeout: \"1h\"" >> $config_file
+    echo "xpack.security.session.lifespan: \"30d\"" >> $config_file
     ;;
   esac
 }
 
 install_elastic_service() {
-  echo "Installing $elastic_service"
+  echo "Installing $ELASTIC_SERVICE"
   cd /tmp
-  gsutil cp ${bucket_path}/$elastic_service* /tmp
-  package_file=$(ls $elastic_service* | grep rpm$ --max-count=1)
+  gsutil cp ${bucket_path}/$ELASTIC_SERVICE* /tmp
+  package_file=$(ls $ELASTIC_SERVICE* | grep rpm$ --max-count=1)
   sudo rpm --install $package_file
 }
 
@@ -90,18 +142,23 @@ main() {
     exit 1
   fi
 
-  elastic_service=${hostname}
+  ELASTIC_SERVICE=${hostname}
+  ELASTIC_PWD=${elastic_pwd}
+
+  MOUNT_PATH=${volume_mount_path}/$ELASTIC_SERVICE
+
+  mount_volume
 
   install_java && echo
 
-  case $elastic_service in
+  case $ELASTIC_SERVICE in
   elasticsearch | logstash | kibana)
     install_elastic_service && echo
     config_elastic_service && echo
     start_elastic_service && echo
     ;;
   *)
-    echo $elastic_service "is not an Elastic stack service" && exit 1
+    echo $ELASTIC_SERVICE "is not an Elastic stack service" && exit 1
     ;;
   esac
 }

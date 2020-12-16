@@ -2,12 +2,15 @@ data "template_file" "install_elastic_stack" {
   template = "${file("modules/elastic-stack/files/install_elasticstack.sh.tpl")}"
 
   vars = {
-    hostname          = var.hostname
-    bucket_path       = var.bucket_path
+    hostname              = var.hostname
+    volume_device_name    = var.volume_device_name
+    volume_mount_path     = var.volume_mount_path
+    bucket_path           = var.bucket_path
     elasticsearch_priv_ip = var.elasticsearch_priv_ip
-    project_id        = var.project_id
-    topic_name        = var.topic_name
-    subscription_name = var.subscription_name
+    project_id            = var.project_id
+    topic_name            = var.topic_name
+    subscription_name     = var.subscription_name
+    elastic_pwd           = var.elastic_pwd
   }
 }
 
@@ -24,7 +27,7 @@ resource "google_compute_instance" "elastic_stack" {
       image = var.image
     }
   }
-//  gcp_public_key_path
+
   attached_disk {
     source = element(concat(google_compute_disk.elastic_volume.*.self_link, list("")), 0)
   }
@@ -46,18 +49,6 @@ resource "google_compute_instance" "elastic_stack" {
 
   metadata = {
     ssh-keys = "${var.ssh_user}:${file(var.public_key_path)}"
-  }
-
-  provisioner "file" {
-    source = var.path_to_credentials
-    destination = "~/.ssh/mesoform-testing.json"
-
-    connection {
-      type = "ssh"
-      user = "centos"
-      private_key = file("${var.private_key_path}")
-      host = self.network_interface.0.access_config.0.nat_ip
-    }
   }
 
   metadata_startup_script = data.template_file.install_elastic_stack.rendered

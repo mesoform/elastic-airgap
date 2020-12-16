@@ -3,11 +3,12 @@ variable "hostname" {
 }
 
 variable "volume_device_name" {
+  default     = "/dev/sdb"
   description = "The device name. E.g. /dev/sdf"
 }
 
 variable "volume_mount_path" {
-  default     = "/mnt/elastic"
+  default     = "/var"
   description = "The volume mount path"
 }
 
@@ -43,13 +44,11 @@ variable "compute_subnetwork_name" {
   description = "The name of the subnetwork attached to interface in this instance"
 }
 
-variable "ssh_user" {}
+variable "ssh_user" {
+  default = "centos"
+}
 
 variable "public_key_path" {}
-
-variable "private_key_path" {}
-
-variable "path_to_credentials" {}
 
 variable "disk_type" {
   default = "pd-ssd"
@@ -74,3 +73,5 @@ variable "topic_name" {
 variable "subscription_name" {
   default="test-subscription"
 }
+
+variable "elastic_pwd" {}
