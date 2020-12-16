@@ -57,8 +57,8 @@ resource "google_compute_firewall" "elastic_fw_ext" {
   }
 }
 
-#module "export_logging" {
-#  source = "./modules/export-logging"
+#module "pubsub_logging" {
+#  source = "./modules/pubsub-logging"
 #
 #  project_id = var.project_id
 #  expiration_policy = var.expiration_policy
@@ -117,6 +117,6 @@ module "logstash" {
   topic_name              = var.topic_name
   subscription_name       = var.subscription_name
   elastic_pwd             = var.elastic_pwd
-#  topic_name              = module.export_logging.topic_name
-#  subscription_name       = module.export_logging.subscription_name
+#  topic_name              = module.pubsub_logging.topic_name
+#  subscription_name       = module.pubsub_logging.subscription_name
 }
