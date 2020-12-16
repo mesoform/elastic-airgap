@@ -88,20 +88,20 @@ Clone the `elastic-airgap` github repository and modify the variables file `terr
 
 #### Visualise logging data on Kibana
     
-  1) On the home menu: Go to Visualize and Explore Data > `Dashboard` > Index patterns `+ Create index pattern`
+  1) On the home menu: Go to [Visualize and Explore Data] `Dashboard` > Index patterns `+ Create index pattern`
     
   2) Define index pattern using `pubsub-*` which should the first word from the source index.
     
   3) Select a primary time field for use with the global time filter: `@timestamp` and then create the index pattern.
     
-  4) Go back to the main menu and click on Visualize and Explore Data `Discover` to explore the data.
+  4) Go back to the main menu and click on [Visualize and Explore Data] `Discover` to explore the data.
   
 #### Elastic security
 
-  1) On the home menu: Go to `Manage and Administer the Elastic Stack` > `Security Settings` > Kibana `Advance Settings`
+  1) On the home menu: Go to [Manage and Administer the Elastic Stack] `Security Settings` > Kibana `Advance Settings`
   
-  2) Scroll down to `Security Solution` settings and on Elasticsearch indices update default `securitySolution:defaultIndex` by adding `pubsub-*` to the list. That way Elastic Security app will use that index pattern to collect data.
+  2) Scroll down to [Security Solution] settings and on Elasticsearch indices update default `securitySolution:defaultIndex` by adding `pubsub-*` to the list. That way Elastic Security app will use that index pattern to collect data.
   
-  3) Go back to the main menu and click on Visualize and Explore Data `Security` to explore the data under the events tab.
+  3) Go back to the main menu and click on [Visualize and Explore Data] `Security` to explore the data under the events tab.
   
   Documentantion: https://www.elastic.co/guide/en/security/current/advanced-settings.html
